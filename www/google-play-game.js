@@ -7,7 +7,7 @@ var GooglePlayGame = function () {
 
 var actions = ['auth', 'signOut', 'isSignedIn',
                'submitScore', 'showAllLeaderboards', 'showLeaderboard',
-               'unlockAchievement', 'incrementAchievement', 'showAchievements', 'showPlayer', 'showAccessToken'];
+               'unlockAchievement', 'incrementAchievement', 'showAchievements', 'showPlayer', 'showAccessToken', 'revealAchievement'];
 
 actions.forEach(function (action) {
     GooglePlayGame.prototype[action] = function (data, success, failure) {

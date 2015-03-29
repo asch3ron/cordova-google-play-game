@@ -56,6 +56,7 @@ public class GooglePlayGame extends CordovaPlugin implements GameHelperListener 
     private static final String ACTION_SHOW_ACHIEVEMENTS = "showAchievements";
     private static final String ACTION_SHOW_PLAYER = "showPlayer";
     private static final String ACTION_SHOW_ACCESSTOKEN = "showAccessToken";
+    private static final String ACTION_REVEAL_ACHIEVEMENT = "revealAchievement";
 
     private static final int ACTIVITY_CODE_SHOW_LEADERBOARD = 0;
     private static final int ACTIVITY_CODE_SHOW_ACHIEVEMENTS = 1;
@@ -125,6 +126,8 @@ public class GooglePlayGame extends CordovaPlugin implements GameHelperListener 
             executeUnlockAchievement(options, callbackContext);
         } else if (ACTION_INCREMENT_ACHIEVEMENT.equals(action)) {
             executeIncrementAchievement(options, callbackContext);
+        } else if (ACTION_REVEAL_ACHIEVEMENT.equals(action)) {
+            executeRevealAchievement(options, callbackContext);
         } else if (ACTION_SHOW_PLAYER.equals(action)) {
             executeShowPlayer(callbackContext);
         } else if (ACTION_SHOW_ACCESSTOKEN.equals(action)) {
@@ -178,7 +181,7 @@ public class GooglePlayGame extends CordovaPlugin implements GameHelperListener 
             }
         });
     }
-    
+
     private void executeSubmitScore(final JSONObject options, final CallbackContext callbackContext) throws JSONException {
         Log.d(LOGTAG, "executeSubmitScore");
 
@@ -241,6 +244,24 @@ public class GooglePlayGame extends CordovaPlugin implements GameHelperListener 
                 } catch (JSONException e) {
                     Log.w(LOGTAG, "executeShowLeaderboard: unexpected error", e);
                     callbackContext.error("executeShowLeaderboard: error while showing specific leaderboard");
+                }
+            }
+        });
+    }
+
+    private void executeRevealAchievement(final JSONObject options, final CallbackContext callbackContext) {
+        Log.d(LOGTAG, "executeRevealAchievement");
+
+        cordova.getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+                if (gameHelper.isSignedIn()) {
+                    Games.Achievements.reveal(gameHelper.getApiClient(), options.optString("achievementId"));
+                    callbackContext.success();
+                } else {
+                    Log.w(LOGTAG, "executeRevealAchievement: not yet signed in");
+                    callbackContext.error("executeRevealAchievement: not yet signed in");
                 }
             }
         });
